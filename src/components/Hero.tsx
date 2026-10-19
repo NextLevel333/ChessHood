@@ -17,7 +17,7 @@ export function Hero() {
             Play online
           </Link>
           <Link className="btn btn-dark" to="/practice">
-            Practice offline
+            Play the CPU
           </Link>
         </div>
       </div>
