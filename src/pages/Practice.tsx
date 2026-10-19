@@ -13,7 +13,12 @@ import type { Color } from '../game/session';
 import { feedbackForDraw, feedbackForMove } from '../game/sound';
 import { useGameSession } from '../game/useGameSession';
 
-const CPU_DELAY_MS = 500;
+const CPU_DELAY_MIN_MS = 500;
+const CPU_DELAY_MAX_MS = 1200;
+
+function cpuDelay(): number {
+  return CPU_DELAY_MIN_MS + Math.random() * (CPU_DELAY_MAX_MS - CPU_DELAY_MIN_MS);
+}
 
 interface Setup {
   difficulty: Difficulty | null; // null = local hot-seat
@@ -53,7 +58,7 @@ function PracticeGame({
         if (m)
           session.move(m.from, m.to, (m.promotion as 'q' | 'r' | 'b' | 'n' | undefined) ?? 'q');
       }
-    }, CPU_DELAY_MS);
+    }, cpuDelay());
     return () => clearTimeout(timer);
   }, [snapshot, difficulty, cpuColor, session]);
 
