@@ -1,22 +1,24 @@
+import { Link } from 'react-router-dom';
+
 export function Hero() {
   return (
     <section className="hero">
       <div className="hero-text">
-        <p className="pill">Prototype • Free to play</p>
+        <p className="pill">Research prototype • Free to play</p>
         <h1>
           Chess, but <span className="lime">hood</span> style.
         </h1>
         <p className="lead">
-          Jump into a free online 1v1 or a friendly tournament. Bold board, big vibes, zero wallet
-          required.
+          Create a private room, share the link and play a real-time 1v1 with a friend.
+          Server-checked moves, bold board, zero wallet required.
         </p>
         <div className="cta">
-          <a className="btn btn-primary" href="#play">
-            Play Free
-          </a>
-          <a className="btn btn-dark" href="#token">
-            Token-Gated Arena
-          </a>
+          <Link className="btn btn-primary" to="/lobby">
+            Play online
+          </Link>
+          <Link className="btn btn-dark" to="/practice">
+            Practice offline
+          </Link>
         </div>
       </div>
       <div className="hero-art" aria-hidden="true">

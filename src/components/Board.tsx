@@ -1,53 +1,62 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Chess, type Square } from 'chess.js';
-import type { GameSession, GameSnapshot } from '../game/session';
+import { Piece, pieceName } from './pieces';
 
-const GLYPHS: Record<string, string> = {
-  wk: '♔',
-  wq: '♕',
-  wr: '♖',
-  wb: '♗',
-  wn: '♘',
-  wp: '♙',
-  bk: '♚',
-  bq: '♛',
-  br: '♜',
-  bb: '♝',
-  bn: '♞',
-  bp: '♟',
-};
-const FILES = 'abcdefgh';
+export type BoardColor = 'w' | 'b';
 
-interface Props {
-  session: GameSession;
-  snapshot: GameSnapshot;
+export interface BoardProps {
+  fen: string;
+  lastMove: { from: string; to: string } | null;
+  inCheck: boolean;
+  /** Which side the local user may move right now ('both' for hot-seat, null for read-only). */
+  movableColor: BoardColor | 'both' | null;
+  onMove: (from: Square, to: Square, promotion?: 'q') => void;
+  /** Which colour is drawn at the bottom. */
+  orientation?: BoardColor;
 }
 
-export function Board({ session, snapshot }: Props) {
-  const [selected, setSelected] = useState<Square | null>(null);
-  const board = new Chess(snapshot.fen).board();
-  const over =
-    snapshot.status === 'checkmate' ||
-    snapshot.status === 'stalemate' ||
-    snapshot.status === 'draw';
-  const targets = selected ? session.legalTargets(selected) : [];
+const FILES = 'abcdefgh';
 
-  const click = (sq: Square, color?: string) => {
-    if (over) return;
+export function Board({
+  fen,
+  lastMove,
+  inCheck,
+  movableColor,
+  onMove,
+  orientation = 'w',
+}: BoardProps) {
+  const [selected, setSelected] = useState<Square | null>(null);
+  const chess = useMemo(() => new Chess(fen), [fen]);
+  const turn = chess.turn();
+  const board = chess.board();
+  const canMove = movableColor === 'both' || movableColor === turn;
+  // Highlights only; the authority (local session or server) re-validates every move.
+  const targets =
+    selected && canMove ? chess.moves({ square: selected, verbose: true }).map((m) => m.to) : [];
+
+  const click = (sq: Square, color?: BoardColor) => {
+    if (!canMove) return;
     if (selected && targets.includes(sq)) {
-      session.move(selected, sq);
+      const piece = chess.get(selected);
+      const promotes = piece?.type === 'p' && (sq[1] === '8' || sq[1] === '1');
+      onMove(selected, sq, promotes ? 'q' : undefined);
       setSelected(null);
-    } else if (color === snapshot.turn) {
+    } else if (color === turn) {
       setSelected(sq === selected ? null : sq);
     } else {
       setSelected(null);
     }
   };
 
+  const rows = orientation === 'w' ? [0, 1, 2, 3, 4, 5, 6, 7] : [7, 6, 5, 4, 3, 2, 1, 0];
+  // Rotating the board 180° for black reverses both ranks and files, so one index order serves both.
+  const cols = rows;
+
   return (
     <div className="board" role="group" aria-label="Chessboard">
-      {board.flatMap((row, r) =>
-        row.map((cell, c) => {
+      {rows.flatMap((r) =>
+        cols.map((c) => {
+          const cell = board[r][c];
           const sq = `${FILES[c]}${8 - r}` as Square;
           const dark = (r + c) % 2 === 1;
           const cls = [
@@ -55,23 +64,22 @@ export function Board({ session, snapshot }: Props) {
             dark ? 'dark' : 'light',
             sq === selected ? 'sel' : '',
             targets.includes(sq) ? 'target' : '',
-            snapshot.lastMove && (snapshot.lastMove.from === sq || snapshot.lastMove.to === sq)
-              ? 'last'
-              : '',
-            snapshot.inCheck && cell?.type === 'k' && cell.color === snapshot.turn ? 'check' : '',
-          ].join(' ');
-          const label = cell ? `${cell.color === 'w' ? 'White' : 'Black'} ${cell.type}` : 'empty';
+            lastMove && (lastMove.from === sq || lastMove.to === sq) ? 'last' : '',
+            inCheck && cell?.type === 'k' && cell.color === turn ? 'check' : '',
+          ]
+            .filter(Boolean)
+            .join(' ');
+          const label = cell ? pieceName(cell.color, cell.type) : 'empty';
           return (
             <button
               key={sq}
               type="button"
               className={cls}
+              data-square={sq}
               aria-label={`${sq} ${label}`}
               onClick={() => click(sq, cell?.color)}
             >
-              {cell ? (
-                <span className={`piece ${cell.color}`}>{GLYPHS[cell.color + cell.type]}</span>
-              ) : null}
+              {cell ? <Piece color={cell.color} type={cell.type} /> : null}
             </button>
           );
         }),
