@@ -20,11 +20,11 @@ function render(orientation: 'w' | 'b' = 'w') {
 }
 
 describe('Board', () => {
-  it('renders 64 equal squares, 32 solid SVG pieces and no Unicode glyphs', () => {
+  it('renders 64 equal squares, 32 landing-style glyph pieces', () => {
     const html = render();
     expect(html.match(/class="sq /g)).toHaveLength(64);
-    expect(html.match(/<svg/g)).toHaveLength(32);
-    expect(html).not.toMatch(/[\u2654-\u265F]/);
+    expect(html.match(/class="piece-glyph /g)).toHaveLength(32);
+    expect(html).not.toMatch(/[\u2654-\u2659]/);
   });
 
   it('labels pieces and empty squares accessibly', () => {
