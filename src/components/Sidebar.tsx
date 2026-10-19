@@ -16,27 +16,13 @@ export function statusText(s: GameSnapshot): string {
   }
 }
 
-interface Props {
-  snapshot: GameSnapshot;
-  onReset: () => void;
-}
-
-export function Sidebar({ snapshot, onReset }: Props) {
+export function MoveList({ history }: { history: string[] }) {
   const rows: [string, string | undefined][] = [];
-  for (let i = 0; i < snapshot.history.length; i += 2) {
-    rows.push([snapshot.history[i], snapshot.history[i + 1]]);
+  for (let i = 0; i < history.length; i += 2) {
+    rows.push([history[i], history[i + 1]]);
   }
   return (
-    <aside className="sidebar card">
-      <div className="player">
-        ♚ Player 2 (Black) <span className="muted">— placeholder</span>
-      </div>
-      <p className="turn" role="status" aria-live="polite">
-        {statusText(snapshot)}
-      </p>
-      <div className="player">
-        ♔ Player 1 (White) <span className="muted">— placeholder</span>
-      </div>
+    <>
       <h3>Moves</h3>
       <ol className="moves">
         {rows.length === 0 ? <li className="muted">No moves yet</li> : null}
@@ -46,6 +32,24 @@ export function Sidebar({ snapshot, onReset }: Props) {
           </li>
         ))}
       </ol>
+    </>
+  );
+}
+
+interface Props {
+  snapshot: GameSnapshot;
+  onReset: () => void;
+}
+
+export function Sidebar({ snapshot, onReset }: Props) {
+  return (
+    <aside className="sidebar card">
+      <div className="player">Black (hot-seat)</div>
+      <p className="turn" role="status" aria-live="polite">
+        {statusText(snapshot)}
+      </p>
+      <div className="player">White (hot-seat)</div>
+      <MoveList history={snapshot.history} />
       <button type="button" className="btn btn-primary" onClick={onReset}>
         New game
       </button>

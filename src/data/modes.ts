@@ -1,37 +1,3 @@
-export interface GameMode {
-  id: 'free-1v1' | 'free-tournament' | 'gated-wager' | 'gated-prize';
-  name: string;
-  blurb: string;
-  gated: boolean;
-}
-
-export const GAME_MODES: GameMode[] = [
-  {
-    id: 'free-1v1',
-    name: 'Free 1v1',
-    blurb: 'Quick casual game. No wallet, no token.',
-    gated: false,
-  },
-  {
-    id: 'free-tournament',
-    name: 'Free Tournaments',
-    blurb: 'Join bracket rooms for bragging rights.',
-    gated: false,
-  },
-  {
-    id: 'gated-wager',
-    name: 'Token-Gated Wager Matches',
-    blurb: 'Planned for later, pending verification and compliance review.',
-    gated: true,
-  },
-  {
-    id: 'gated-prize',
-    name: 'Token-Gated Prize Tournaments',
-    blurb: 'Planned for later, pending verification and compliance review.',
-    gated: true,
-  },
-];
-
 export interface TournamentRoom {
   id: string;
   name: string;

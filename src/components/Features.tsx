@@ -1,10 +1,14 @@
 const items = [
-  { icon: '♟', title: 'Free 1v1', text: 'Pick a game and play. No sign-up wall, no token needed.' },
-  { icon: '♜', title: 'Tournaments', text: 'Free knockout rooms with a simple join flow.' },
+  {
+    icon: '♟',
+    title: 'Free 1v1',
+    text: 'Create a private room or join the quick-match queue. No sign-up wall, no token needed.',
+  },
+  { icon: '♜', title: 'Tournaments', text: 'Planned: free knockout rooms. Not available yet.' },
   {
     icon: '♛',
-    title: 'Token-gated access (future)',
-    text: 'An optional ERC-20 holder area is planned, but it is not available yet.',
+    title: 'Testnet access gate (experimental)',
+    text: 'Optional, server-verified ERC-20 test-arena access on a testnet only. Off unless the server enables it.',
   },
 ];
 

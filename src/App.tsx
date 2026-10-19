@@ -1,49 +1,26 @@
-import { useState } from 'react';
-import { GAME_MODES, type GameMode } from './data/modes';
-import { Hero } from './components/Hero';
-import { Features } from './components/Features';
-import { TokenStatus } from './components/TokenStatus';
-import { ModeSelector } from './components/ModeSelector';
-import { PlayArea } from './components/PlayArea';
-import { TournamentLobby } from './components/TournamentLobby';
+import { HashRouter, Route, Routes } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import { RealtimeProvider } from './net/RealtimeProvider';
+import { Game } from './pages/Game';
+import { Landing } from './pages/Landing';
+import { Lobby } from './pages/Lobby';
+import { Practice } from './pages/Practice';
 
+/** Hash routing keeps deep links working on GitHub Pages, which cannot rewrite unknown paths. */
 export default function App() {
-  const [mode, setMode] = useState<GameMode>(GAME_MODES[0]);
-
   return (
-    <>
-      <header className="nav">
-        <a className="logo" href="#top">
-          <span aria-hidden="true">♞</span> ChessHood
-        </a>
-        <nav aria-label="Main">
-          <a href="#play">Play</a>
-          <a href="#tournaments">Tournaments</a>
-          <a href="#token">Token</a>
-        </nav>
-      </header>
-      <main id="top">
-        <Hero />
-        <Features />
-        <section id="play" className="section">
-          <h2>Play</h2>
-          <ModeSelector selected={mode.id} onSelect={setMode} />
-          {mode.id === 'free-tournament' ? (
-            <p className="note">
-              Tournament rooms are below. Meanwhile, practice on the local board.
-            </p>
-          ) : null}
-          <PlayArea />
-        </section>
-        <TournamentLobby />
-        <TokenStatus />
-      </main>
-      <footer className="footer">
-        <p>
-          ChessHood is an early prototype. No token is live, and nothing here offers financial
-          returns or guaranteed winnings.
-        </p>
-      </footer>
-    </>
+    <HashRouter>
+      <RealtimeProvider>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Landing />} />
+            <Route path="lobby" element={<Lobby />} />
+            <Route path="game/:gameId" element={<Game />} />
+            <Route path="practice" element={<Practice />} />
+            <Route path="*" element={<Landing />} />
+          </Route>
+        </Routes>
+      </RealtimeProvider>
+    </HashRouter>
   );
 }

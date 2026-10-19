@@ -19,11 +19,18 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - uses: actions/configure-pages@v5
       - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
       - run: npm run build
+        env:
+          # Public URLs of the deployed realtime backend (repository Variables, not secrets).
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_SOCKET_URL: ${{ vars.VITE_SOCKET_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
