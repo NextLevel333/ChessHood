@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from 'react-router-dom';
+import { SoundToggle } from './SoundToggle';
 
 export function Layout() {
   return (
@@ -9,8 +10,9 @@ export function Layout() {
         </Link>
         <nav aria-label="Main">
           <NavLink to="/lobby">Lobby</NavLink>
-          <NavLink to="/practice">Practice (offline)</NavLink>
+          <NavLink to="/practice">Free play</NavLink>
         </nav>
+        <SoundToggle />
       </header>
       <main>
         <Outlet />

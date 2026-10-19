@@ -39,19 +39,28 @@ export function MoveList({ history }: { history: string[] }) {
 interface Props {
   snapshot: GameSnapshot;
   onReset: () => void;
+  topLabel?: string;
+  bottomLabel?: string;
+  resetLabel?: string;
 }
 
-export function Sidebar({ snapshot, onReset }: Props) {
+export function Sidebar({
+  snapshot,
+  onReset,
+  topLabel = 'Black (hot-seat)',
+  bottomLabel = 'White (hot-seat)',
+  resetLabel = 'New game',
+}: Props) {
   return (
     <aside className="sidebar card">
-      <div className="player">Black (hot-seat)</div>
+      <div className="player">{topLabel}</div>
       <p className="turn" role="status" aria-live="polite">
         {statusText(snapshot)}
       </p>
-      <div className="player">White (hot-seat)</div>
+      <div className="player">{bottomLabel}</div>
       <MoveList history={snapshot.history} />
       <button type="button" className="btn btn-primary" onClick={onReset}>
-        New game
+        {resetLabel}
       </button>
     </aside>
   );

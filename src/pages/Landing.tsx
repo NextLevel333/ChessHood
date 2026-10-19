@@ -20,10 +20,13 @@ export function Landing() {
             </Link>
           </article>
           <article className="card">
-            <h3>Practice (offline)</h3>
-            <p>A local hot-seat board on this device. Not online play; nothing leaves your tab.</p>
+            <h3>Free play (vs CPU)</h3>
+            <p>
+              Play a CPU (Easy, Intermediate or Hard) with a random colour, or a local hot-seat
+              board. Not online play.
+            </p>
             <Link className="btn btn-dark" to="/practice">
-              Open practice board
+              Open free play
             </Link>
           </article>
         </div>
