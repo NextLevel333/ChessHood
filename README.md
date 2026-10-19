@@ -19,6 +19,23 @@ npm test         # Vitest
 
 Requires Node 20+.
 
+## Deployment (GitHub Pages)
+
+The workflow `.github/workflows/deploy-pages.yml` builds the app (`npm ci`, `npm run build`) and deploys
+`dist` on every push to `main` or manual dispatch. The production build uses the base path `/ChessHood/`;
+local dev uses `/`.
+
+One-time setup: in the repository go to **Settings → Pages → Build and deployment → Source** and select
+**GitHub Actions**. The site is then served at `https://<owner>.github.io/ChessHood/`.
+
+GitHub Pages hosts only the static frontend. It cannot run server code.
+
+### Local hot-seat vs. real online multiplayer
+
+The current game is a local hot-seat implementation: both players share one browser tab and no state
+leaves it. Real online multiplayer needs a separate authoritative backend/realtime service (move
+validation, matchmaking, clocks) plus persistence and authentication. GitHub Pages alone cannot provide this.
+
 ## Features
 
 - Landing page with Play Free / Token-Gated Arena paths and a "token not live yet" status.
